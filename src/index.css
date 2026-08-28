@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #faf9f6;
+  color: #2b2b2b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo',
+    'Malgun Gothic', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Top-down tree (org-chart style) ---- */
+.tree,
+.tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree ul {
+  position: relative;
+  display: flex;
+  padding-top: 22px;
+}
+
+.tree li {
+  position: relative;
+  padding: 22px 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* connectors */
+.tree li::before,
+.tree li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  width: 50%;
+  height: 22px;
+  border-top: 1px solid #d9d6cf;
+}
+.tree li::after {
+  right: auto;
+  left: 50%;
+  border-left: 1px solid #d9d6cf;
+}
+.tree li:only-child::before,
+.tree li:only-child::after {
+  display: none;
+}
+.tree li:only-child {
+  padding-top: 0;
+}
+.tree li:first-child::before,
+.tree li:last-child::after {
+  border: 0 none;
+}
+.tree li:last-child::before {
+  border-right: 1px solid #d9d6cf;
+}
+.tree ul ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 22px;
+  border-left: 1px solid #d9d6cf;
+}
+
+/* root wrapper has no incoming line */
+.tree > li {
+  padding-top: 0;
+}
+.tree > li::before,
+.tree > li::after {
+  display: none;
+}
