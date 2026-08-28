@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Difficulty, FlowLog } from './types';
 import { useAppState } from './useAppState';
-import { MindMap } from './components/MindMap';
+import { TreeView } from './components/TreeView';
 import { PrinciplesPanel } from './components/PrinciplesPanel';
 import { Modal } from './components/Modal';
 
@@ -34,6 +34,13 @@ export default function App() {
   }, [inProgressNode]);
 
   const rootId = useMemo(() => childrenOf(null)[0]?.id ?? '', [childrenOf]);
+
+  // 처음 열 때 트리를 가로 중앙으로 스크롤
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = mainRef.current;
+    if (el) el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
+  }, []);
 
   const flowLogsById = useMemo(() => {
     const map = new Map<string, FlowLog>();
@@ -84,9 +91,9 @@ export default function App() {
         </p>
       </header>
 
-      <main className="overflow-auto">
+      <main ref={mainRef} className="overflow-auto text-center">
         {rootId && (
-          <MindMap
+          <TreeView
             rootId={rootId}
             nodesById={nodesById}
             childrenOf={childrenOf}
