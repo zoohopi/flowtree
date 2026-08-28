@@ -4,6 +4,7 @@
 
 :root {
   color-scheme: light;
+  --mm-line: #d0cdc4;
 }
 
 html,
@@ -21,73 +22,181 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---- Top-down tree (org-chart style) ---- */
-.tree,
-.tree ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+/* ================= 마인드맵 레이아웃 ================= */
+/* 최상위 목표가 중앙, 하위 목표는 좌/우 양쪽으로 뻗어나간다. */
 
-.tree ul {
-  position: relative;
+.mm {
   display: flex;
-  padding-top: 22px;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: 100%;
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: 64px;
 }
 
-.tree li {
+.mm-center {
   position: relative;
-  padding: 22px 12px 0;
+  flex: none;
+}
+
+/* 루트 → 좌/우 첫 가지로 나가는 짧은 선 */
+.mm-center.has-right::after,
+.mm-center.has-left::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  border-top: 1px solid var(--mm-line);
+}
+.mm-center.has-right::after {
+  right: -20px;
+}
+.mm-center.has-left::before {
+  left: -20px;
+}
+
+.mm-branches {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex: none;
+}
+.mm-branches--right {
+  padding-left: 40px;
+}
+.mm-branches--left {
+  padding-right: 40px;
+  align-items: flex-end;
 }
 
-/* connectors */
-.tree li::before,
-.tree li::after {
+/* 첫 단계 가지의 연결선(수평 팔꿈치 + 수직 버스) */
+.mm-branches > .mb {
+  position: relative;
+}
+.mm-branches > .mb::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  border-top: 1px solid var(--mm-line);
+}
+.mm-branches > .mb::after {
   content: '';
   position: absolute;
   top: 0;
-  right: 50%;
-  width: 50%;
-  height: 22px;
-  border-top: 1px solid #d9d6cf;
+  bottom: 0;
+  border-left: 1px solid var(--mm-line);
 }
-.tree li::after {
-  right: auto;
-  left: 50%;
-  border-left: 1px solid #d9d6cf;
+.mm-branches--right > .mb::before {
+  left: -20px;
 }
-.tree li:only-child::before,
-.tree li:only-child::after {
+.mm-branches--right > .mb::after {
+  left: -20px;
+}
+.mm-branches--left > .mb::before {
+  right: -20px;
+}
+.mm-branches--left > .mb::after {
+  right: -20px;
+}
+.mm-branches > .mb:first-child::after {
+  top: 50%;
+}
+.mm-branches > .mb:last-child::after {
+  bottom: 50%;
+}
+.mm-branches > .mb:only-child::after {
   display: none;
 }
-.tree li:only-child {
-  padding-top: 0;
+
+/* ---- 재귀 가지 ---- */
+.mb {
+  display: flex;
+  align-items: center;
 }
-.tree li:first-child::before,
-.tree li:last-child::after {
-  border: 0 none;
+.mb--right {
+  flex-direction: row;
 }
-.tree li:last-child::before {
-  border-right: 1px solid #d9d6cf;
+.mb--left {
+  flex-direction: row-reverse;
 }
-.tree ul ul::before {
+
+.mb-node {
+  position: relative;
+  flex: none;
+}
+
+/* 부모 노드 → 자식 버스로 나가는 짧은 선 */
+.mb.has-kids.mb--right > .mb-node::after,
+.mb.has-kids.mb--left > .mb-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 17px;
+  border-top: 1px solid var(--mm-line);
+}
+.mb.has-kids.mb--right > .mb-node::after {
+  right: -17px;
+}
+.mb.has-kids.mb--left > .mb-node::before {
+  left: -17px;
+}
+
+.mb-kids {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  flex: none;
+}
+.mb--right > .mb-kids {
+  padding-left: 34px;
+}
+.mb--left > .mb-kids {
+  padding-right: 34px;
+  align-items: flex-end;
+}
+
+.mb-kids > .mb {
+  position: relative;
+}
+.mb-kids > .mb::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 17px;
+  border-top: 1px solid var(--mm-line);
+}
+.mb-kids > .mb::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 50%;
-  width: 0;
-  height: 22px;
-  border-left: 1px solid #d9d6cf;
+  bottom: 0;
+  border-left: 1px solid var(--mm-line);
 }
-
-/* root wrapper has no incoming line */
-.tree > li {
-  padding-top: 0;
+.mb--right > .mb-kids > .mb::before {
+  left: -17px;
 }
-.tree > li::before,
-.tree > li::after {
+.mb--right > .mb-kids > .mb::after {
+  left: -17px;
+}
+.mb--left > .mb-kids > .mb::before {
+  right: -17px;
+}
+.mb--left > .mb-kids > .mb::after {
+  right: -17px;
+}
+.mb-kids > .mb:first-child::after {
+  top: 50%;
+}
+.mb-kids > .mb:last-child::after {
+  bottom: 50%;
+}
+.mb-kids > .mb:only-child::after {
   display: none;
 }

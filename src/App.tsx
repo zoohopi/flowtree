@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Difficulty, FlowLog } from './types';
 import { useAppState } from './useAppState';
-import { TreeView } from './components/TreeView';
+import { MindMap } from './components/MindMap';
 import { PrinciplesPanel } from './components/PrinciplesPanel';
 import { Modal } from './components/Modal';
 
@@ -84,9 +84,9 @@ export default function App() {
         </p>
       </header>
 
-      <main className="overflow-x-auto px-6 py-10">
+      <main className="overflow-auto">
         {rootId && (
-          <TreeView
+          <MindMap
             rootId={rootId}
             nodesById={nodesById}
             childrenOf={childrenOf}
